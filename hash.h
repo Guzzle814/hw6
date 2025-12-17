@@ -20,15 +20,40 @@ struct MyStringHash {
     HASH_INDEX_T operator()(const std::string& k) const
     {
         // Add your code here
+      unsigned long long w[5] = {};
+      int num = 4;
+      int pos = k.size();
+      while(pos > 0 && num >= 0)
+      {
+        int start = std::max(0, pos-6);
+        for(int i = start; i < pos; i++)
+        {
+          w[num] = w[num]*36 + letterDigitToNumber(k[i]);
+        }
 
+        num--;
+        pos = start;
+      }
 
+      HASH_INDEX_T target = 0; 
+      for(int i = 0; i<5; i++)
+      {
+        //In our task, computation between long unsigned int and int should not have an issue
+        target = target + rValues[i]*w[i]; 
+      }
+      
+      return target;
     }
 
     // A likely helper function is to convert a-z,0-9 to an integral value 0-35
     HASH_INDEX_T letterDigitToNumber(char letter) const
     {
-        // Add code here or delete this helper function if you do not want it
-
+      // Add code here or delete this helper function if you do not want it
+      char c = letter;//don't want to type "letter" all the time
+      c = std::tolower(c);
+      if(c >='a' && c<= 'z') return c - 'a';
+      if(c >= '0' && c<= '9') return (c - '0') + 26;
+      else return 0;
     }
 
     // Code to generate the random R values
